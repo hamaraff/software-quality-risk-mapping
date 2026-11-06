@@ -111,3 +111,48 @@ La cartographie ci-dessous détaille les risques qualité identifiés selon le m
 - **Cause possible :** Ce qui pourrait mal se passer techniquement ou fonctionnellement.
 - **Conséquence :** L'effet observable pour l'utilisateur ou le système si le risque se réalise.
 - **Niveau de risque :** Faible, Moyen ou Élevé.
+
+---
+
+## 6. Périmètre de la campagne de test
+
+Le plan détaillé de la campagne, ses niveaux de test, son environnement et ses critères d'entrée et de sortie sont disponibles dans le [rapport PDF](<./Périmètre de la Campagne de Test.pdf>).
+
+### Fonctions couvertes
+
+| Référence | Fonction |
+|---|---|
+| F01 | Inscription d'un client et génération de sa référence |
+| F02 | Vérification d'un client à partir de sa référence |
+| F03 | Affichage des créneaux disponibles pour une date |
+| F04 | Création d'un rendez-vous et contrôle de l'exclusivité du créneau |
+| F05 | Consultation de l'historique des rendez-vous |
+| F06 | Modification d'un rendez-vous futur |
+| F07 | Suppression d'un rendez-vous |
+| F08 | Respect des cinq créneaux fixes : 10 h, 11 h, 14 h, 15 h et 16 h |
+
+Les six fonctions critiques identifiées dans la cartographie des risques de la semaine 1 sont couvertes : création d'un rendez-vous, disponibilité des créneaux, vérification du client, modification, inscription et gestion des créneaux fixes.
+
+### Lien entre risques et tests
+
+| Risque de la cartographie | Fonctions / contrôles de test |
+|---|---|
+| Surbooking d'un créneau | F03 et F04 : vérifier qu'un créneau réservé n'est plus proposé et tester deux tentatives de réservation du même créneau |
+| Créneau ou horaire invalide | F03, F04 et F08 : contrôler les cinq horaires autorisés et leur disponibilité selon la date |
+| Date passée ou invalide | F04 et F06 : vérifier le refus des dates non valides et l'acceptation des dates futures |
+| Référence client invalide ou mal vérifiée | F01 et F02 : vérifier la génération, la recherche de la référence et le refus d'une référence inconnue |
+| Modification incorrecte d'un rendez-vous | F06 : vérifier les règles de date, la disponibilité du nouveau créneau et la mise à jour de l'historique |
+| Inscription incorrecte | F01 : vérifier les champs requis, l'enregistrement du client et la génération de sa référence |
+
+Les fonctions faisant intervenir des règles métier sont vérifiées par des tests unitaires ; les accès à la base par des tests d'intégration ; les parcours complets par des tests système. Les règles et horaires doivent également être validés par le représentant métier (tests d'acceptation). La consultation de l'historique et la suppression sont couvertes aux niveaux intégration et système.
+
+### Environnement et critères de campagne
+
+- **Environnement :** poste Windows, interface Vue.js, API PHP et base MariaDB/MySQL. Les versions PHP 8.0.2 et MariaDB 10.4.17 figurent dans le dump SQL ; elles doivent être vérifiées sur l'environnement utilisé.
+- **Données :** base de test réinitialisable, données fictives uniquement et scénarios reproductibles.
+- **Outils proposés :** PHPUnit (à configurer), client API tel que Postman ou Insomnia, navigateur, outils de développement et requêtes SQL de vérification.
+- **Critères d'entrée :** règles métier validées, version du code identifiée, interface/API/base accessibles, données et scénarios de test préparés.
+- **Critères de sortie :** 100 % des scénarios critiques exécutés, aucun défaut bloquant ou majeur ouvert, aucune double réservation observée et résultats attendus sur les parcours critiques. Une couverture d'au moins 80 % des règles métier unitaires est visée si la mesure est configurée.
+- **Arrêt faute de temps :** consigner les scénarios non exécutés et les défauts restants ; la campagne est alors déclarée incomplète, et non validée.
+
+**Point de vigilance :** le parcours de modification côté interface doit être vérifié avant la campagne, car sa soumission semble inachevée dans `vue/src/components/DashbordForm.vue`.
