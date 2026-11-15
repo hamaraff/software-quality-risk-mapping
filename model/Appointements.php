@@ -12,6 +12,7 @@ class Appointements
     public $timeslot_id_fk;
     public $user_subject;
     public $c_date;
+    public $appointement_id;
 
     public function __construct($db)
     {
@@ -71,7 +72,7 @@ class Appointements
         $query = 'SELECT * FROM appointements WHERE appointement_id = :appointement_id';
         // prepare statement
         $stmt = $this->conn->prepare($query);
-        // execute statement
+        $stmt->bindParam(':appointement_id', $this->appointement_id);
         $stmt->execute();
         return $stmt;
     }
